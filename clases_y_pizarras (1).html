@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clases y Pizarras</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f8f9fa;
+      color: #333;
+    }
+    header {
+      background: #2d3436;
+      color: white;
+      text-align: center;
+      padding: 2rem 1rem;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 2.5rem;
+    }
+    header p {
+      margin-top: .5rem;
+      font-size: 1.2rem;
+      font-style: italic;
+    }
+    nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: #636e72;
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      padding: 1rem;
+      z-index: 1000;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    nav a:hover {
+      text-decoration: underline;
+    }
+    section {
+      padding: 4rem 2rem;
+      max-width: 900px;
+      margin: auto;
+    }
+    h2 {
+      color: #2d3436;
+    }
+    footer {
+      background: #2d3436;
+      color: white;
+      text-align: center;
+      padding: 1rem;
+      margin-top: 2rem;
+    }
+    .editable {
+      border: 1px dashed #aaa;
+      padding: 1rem;
+      background: #fff;
+      min-height: 100px;
+    }
+    .editable img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 0.5rem 0;
+      border-radius: 5px;
+    }
+    .blog-entry {
+      border: 1px solid #ccc;
+      background: white;
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+    .blog-entry h3 {
+      margin-top: 0;
+    }
+    button {
+      margin: 1rem 0;
+      padding: .6rem 1rem;
+      background: #2d3436;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #444;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Clases y Pizarras</h1>
+    <p>La vida escolar contada con cultura pop</p>
+  </header>
+
+  <nav>
+    <a href="#presentacion">Presentación</a>
+    <a href="#blog">Blog</a>
+    <a href="#comunidad">Comunidad</a>
+    <a href="#cultura">Cultura Pop</a>
+    <a href="#sobre">Sobre mí</a>
+  </nav>
+
+  <section id="presentacion">
+    <h2>Presentación</h2>
+    <div id="presentacionContent" class="editable" data-id="presentacionContent">
+      Escribe aquí la presentación de tu página...
+    </div>
+  </section>
+
+  <section id="blog">
+    <h2>Blog</h2>
+    <div id="blogContent" data-id="blogContent">
+      <div class="blog-entry editable" data-id="entrada1">
+        <h3>Título de la primera entrada</h3>
+        <p>Aquí puedes escribir tu primera entrada de blog y pegar imágenes 📸</p>
+      </div>
+    </div>
+    <button id="addEntry" style="display:none;">➕ Agregar entrada</button>
+  </section>
+
+  <section id="comunidad">
+    <h2>Comunidad</h2>
+    <div class="editable" data-id="comunidadContent">
+      Un espacio para compartir actividades, proyectos y anécdotas de la vida escolar.
+    </div>
+  </section>
+
+  <section id="cultura">
+    <h2>Cultura Pop</h2>
+    <div class="editable" data-id="culturaContent">
+      El cine, las series y la música nos ayudan a entendernos. Aquí encontrarás referencias que conectan la vida del aula con esas historias que tod@s conocemos.
+    </div>
+  </section>
+
+  <section id="sobre">
+    <h2>Sobre mí</h2>
+    <div class="editable" data-id="sobreContent">
+      Soy Karoll, autora de este proyecto creativo. Este blog busca mirar nuestro colegio desde una nueva perspectiva, usando la cultura pop como espejo de la vida escolar.
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2025 Clases y Pizarras - Creado por Karoll</p>
+  </footer>
+
+  <script>
+    const password = "karoll2025"; // contraseña
+
+    window.onload = function() {
+      document.querySelectorAll('.editable').forEach(div => {
+        const id = div.getAttribute("data-id");
+        const saved = localStorage.getItem(id);
+        if(saved) div.innerHTML = saved;
+      });
+
+      const isAuthor = prompt("Si eres la autora, escribe la contraseña para editar. Si no, presiona cancelar:");
+      if(isAuthor === password) {
+        document.querySelectorAll('.editable').forEach(div => {
+          div.setAttribute('contenteditable', 'true');
+          div.style.border = '1px dashed red';
+          div.addEventListener("input", () => {
+            const id = div.getAttribute("data-id");
+            localStorage.setItem(id, div.innerHTML);
+          });
+        });
+
+        document.getElementById("addEntry").style.display = "block";
+        document.getElementById("addEntry").onclick = function() {
+          const blogContent = document.getElementById("blogContent");
+          const newId = "entrada" + (blogContent.children.length + 1);
+          const newEntry = document.createElement("div");
+          newEntry.classList.add("blog-entry", "editable");
+          newEntry.setAttribute("data-id", newId);
+          newEntry.setAttribute("contenteditable", "true");
+          newEntry.style.border = '1px dashed red';
+          newEntry.innerHTML = "<h3>Nuevo título</h3><p>Escribe aquí tu nueva entrada...</p>";
+          blogContent.appendChild(newEntry);
+
+          newEntry.addEventListener("input", () => {
+            localStorage.setItem(newId, newEntry.innerHTML);
+          });
+        };
+
+        alert("Edición activada ✍️ (se guarda automáticamente)");
+      } else {
+        alert("Modo solo lectura 👀");
+      }
+    };
+  </script>
+
+</body>
+</html>
